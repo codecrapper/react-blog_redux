@@ -61,7 +61,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/ad
 
 ### Deployment
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+Deployed at https://elastic-clarke-39c880.netlify.com/
 
 ### `npm run build` fails to minify
 
