@@ -46,6 +46,12 @@ const Home = ({ getPosts, deletePost, allPosts }) => {
         <div className="container">
             <h4 className="center">Home</h4>
             {renderData()}
+            <button 
+                style={{display: 'block',margin: 'auto'}} 
+                className="btn waves-effect waves-light"
+            >
+                Load more
+            </button>
         </div>
     )
 }
