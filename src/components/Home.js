@@ -6,22 +6,9 @@ import { getPosts, deletePost } from '../actions'
 const Home = ({ getPosts, deletePost, allPosts }) => {
     const [currentLoadedPosts, setCurrentLoadedPosts] = useState([1,2,3])
     
-
     useEffect(() => {
         fetchData()
     }, [currentLoadedPosts])
-
-    // const fetchData = async () => {
-    //     await Promise.all([
-    //         fetch('https://jsonplaceholder.typicode.com/posts/1').then(res => res.json()),
-    //         fetch('https://jsonplaceholder.typicode.com/posts/2').then(res => res.json()),
-	// 		fetch('https://jsonplaceholder.typicode.com/posts/3').then(res => res.json())
-    //         ])
-    //         .then((data) => {
-    //            getPosts(data)
-    //         })
-    //         console.log(numberPostsListed)
-    // }
 
     const fetchData = async () => {
         let data = await Promise.all([
@@ -68,14 +55,14 @@ const Home = ({ getPosts, deletePost, allPosts }) => {
 
     const renderLoadButton = () => {
         if(allPosts) {
-            return <button onClick={testClick} style={{display: 'block', margin: 'auto'}} className="btn waves-effect waves-light">
+            return <button onClick={loadMorePostsClick} style={{display: 'block', margin: 'auto'}} className="btn waves-effect waves-light">
                 Load more
             </button>
         }
         return null
     }
 
-    const testClick = () => {
+    const loadMorePostsClick = () => {
         console.log(currentLoadedPosts)
         let newNumbers = currentLoadedPosts.map(numb => numb + 3)
             setCurrentLoadedPosts([...newNumbers])
