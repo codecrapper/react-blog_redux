@@ -12,16 +12,9 @@ export const deletePost = (id) => {
     }
 }
 
-export const loadMorePostsAction = (data) => {
+export const fetchLoadedPosts = (posts) => {
     return {
-        type: 'LOAD_MORE_POSTS',
-        payload: data
-    }
-}
-
-export const deleteLoadMorePost = (post) => {
-    return {
-        type: 'DELETE_LOADED_POST',
-        payload: post
+        type: 'FETCH_LOADED_POSTS',
+        payload: posts
     }
 }
