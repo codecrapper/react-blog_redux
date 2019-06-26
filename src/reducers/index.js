@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux'
 
 const INITIAL_STATE = {
+    postsToLoad: [4,5,6],
     allPosts: [],
-    // loadMorePosts: []
+    loadMorePosts: []
 }
 
 const posts = (state = INITIAL_STATE, action) => {
@@ -18,11 +19,22 @@ const posts = (state = INITIAL_STATE, action) => {
                 ...state,
                 allPosts: [...newPosts]
             }
-        // case 'FETCH_LOADED_POSTS':
-        //     return {
-        //         ...state,
-        //         loadMorePosts: [...state.loadMorePosts, ...action.payload]
-        //     }
+        case 'FETCH_LOADED_POSTS':
+            return {
+                ...state,
+                loadMorePosts: [...state.loadMorePosts, ...action.payload]
+            }
+        case 'NEXT_POSTS_TO_LOAD':
+            return {
+                ...state,
+                postsToLoad: [...action.payload]
+            }
+        case 'DELETE_LOADED_POST':
+            let newLoadedPosts = state.loadMorePosts.filter(post => post.id !== action.payload)
+            return {
+                ...state,
+                loadMorePosts: [...newLoadedPosts]
+            }
         default: 
             return state
     }

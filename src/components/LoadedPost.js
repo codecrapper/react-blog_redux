@@ -16,7 +16,7 @@ const Post = props => {
 const mapStateToProps = (state, ownProps) => {
     let id = ownProps.match.params.post_id
     return {
-        post: state.posts.allPosts.find(post => {
+        post: state.posts.loadMorePosts.find(post => {
             return post.id.toString() === id
         })
     }

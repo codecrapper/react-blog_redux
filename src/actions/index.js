@@ -18,3 +18,17 @@ export const fetchLoadedPosts = (posts) => {
         payload: posts
     }
 }
+
+export const nextPostsToLoad = (numbs) => {
+    return {
+        type: 'NEXT_POSTS_TO_LOAD',
+        payload: numbs
+    }
+}
+
+export const deleteLoadedPost = (id) => {
+    return {
+        type: 'DELETE_LOADED_POST',
+        payload: id
+    }
+}

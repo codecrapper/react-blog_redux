@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { getPosts, deletePost, fetchLoadedPosts } from '../actions'
+import { getPosts, deletePost, fetchLoadedPosts, nextPostsToLoad, deleteLoadedPost } from '../actions'
 
-const Home = ({ getPosts, deletePost, allPosts, fetchLoadedPosts }) => {
+const Home = ({ getPosts, deletePost, allPosts, fetchLoadedPosts, nextPostsToLoad, deleteLoadedPost }) => {
     const [currentLoadedPosts, setCurrentLoadedPosts] = useState([1,2,3])
-    const [loadMorePosts, setLoadMorePosts] = useState([4,5,6])
-
-    const [loadedPosts, setLoadedPosts] = useState([])
     
     useEffect(() => {
-        fetchData()
+        allPosts.allPosts.length ? console.log('do not fetch again') : fetchData()
     }, [])
 
+    // FETCH FIRST 3 POSTS 
     const fetchData = async () => {
         let data = await Promise.all([
                         fetch(`https://jsonplaceholder.typicode.com/posts/${currentLoadedPosts[0]}`).then(res => res.json()),
@@ -29,8 +27,7 @@ const Home = ({ getPosts, deletePost, allPosts, fetchLoadedPosts }) => {
                 return (
                     <div className="post card" key={post.id}>
                         <div className="card-content">
-                            {/* <Link to={`/${post.id}`}><span className="card-title">{post.title}</span></Link> */}
-                            <span className="card-title">{post.title}</span>
+                            <Link to={`/${post.id}`}><span className="card-title">{post.title}</span></Link>
                             <p style={{fontStyle: "italic", textDecoration: 'underline'}}>blog {post.id}</p>
                             <p>{post.body}</p>
                             <button
@@ -53,6 +50,7 @@ const Home = ({ getPosts, deletePost, allPosts, fetchLoadedPosts }) => {
         deletePost(id)
     }
 
+    // LOAD MORE BUTTON 
     const renderLoadButton = () => {
         if(allPosts) {
             return <button onClick={loadMorePostsClick} style={{display: 'block', margin: 'auto'}} className="btn waves-effect waves-light">
@@ -62,54 +60,54 @@ const Home = ({ getPosts, deletePost, allPosts, fetchLoadedPosts }) => {
         return null
     }
 
+    // FETCHES NEXT 3 POSTS 
     const loadMorePostsClick = async () => {
-        let newNumbers = currentLoadedPosts.map(numb => numb + 3)
-        setCurrentLoadedPosts(newNumbers)
-        console.log(currentLoadedPosts)
         let data = await Promise.all([
-            fetch(`https://jsonplaceholder.typicode.com/posts/${loadMorePosts[0]}`).then(res => res.json()),
-            fetch(`https://jsonplaceholder.typicode.com/posts/${loadMorePosts[1]}`).then(res => res.json()),
-            fetch(`https://jsonplaceholder.typicode.com/posts/${loadMorePosts[2]}`).then(res => res.json())
+            fetch(`https://jsonplaceholder.typicode.com/posts/${allPosts.postsToLoad[0]}`).then(res => res.json()),
+            fetch(`https://jsonplaceholder.typicode.com/posts/${allPosts.postsToLoad[1]}`).then(res => res.json()),
+            fetch(`https://jsonplaceholder.typicode.com/posts/${allPosts.postsToLoad[2]}`).then(res => res.json())
             ])
-            await setLoadedPosts([...loadedPosts, ...data])
-            // await fetchLoadedPosts(data)
-            let moreNumbers = loadMorePosts.map(numb => numb + 3)
-            setLoadMorePosts(moreNumbers)
+            await fetchLoadedPosts(data)
+
+            let nextNumbers = allPosts.postsToLoad.map(numb => numb + 3)
+            nextPostsToLoad(nextNumbers)
     }
 
-    const renderLoadMoreList = () => {
-        return loadedPosts.map(post => {
-            return (
-                <div className="post card" key={post.id}>
-                    <div className="card-content">
-                        {/* <Link to={`/${post.id}`}><span className="card-title">{post.title}</span></Link> */}
-                        <span className="card-title">{post.title}</span>
-                        <p style={{fontStyle: "italic", textDecoration: 'underline'}}>blog {post.id}</p>
-                        <p>{post.body}</p>
-                        <button
-                            onClick={() => deleteLoadMorePost(post.id)} 
-                            style={{marginTop: "10px"}} 
-                            className="btn waves-effect waves-light red"
-                        >
-                            Delete
-                        </button>
+    // RENDERS 3 MORE POSTS FROM LOAD MORE BUTTON
+    const renderFetchLoadedList = () => {
+        if(allPosts.loadMorePosts) {
+            return allPosts.loadMorePosts.map(post => {
+                return (
+                    <div className="post card" key={post.id}>
+                        <div className="card-content">
+                            <Link to={`/loaded/${post.id}`}><span className="card-title">{post.title}</span></Link>
+                            <p style={{fontStyle: "italic", textDecoration: 'underline'}}>blog {post.id}</p>
+                            <p>{post.body}</p>
+                            <button
+                                onClick={() => deleteLoadMorePost(post.id)} 
+                                style={{marginTop: "10px"}} 
+                                className="btn waves-effect waves-light red"
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </div>
-                </div>
-            )
-        })
+                )
+            })
+        }
+        return null
     }
 
+    // DELETE LOADED POST
     const deleteLoadMorePost = (id) => {
-        let newLoadMoreList = loadedPosts.filter(post => post.id !== id)
-        setLoadedPosts([...newLoadMoreList])
+        deleteLoadedPost(id)
     }
 
     return (
         <div className="container">
             <h4 className="center">Home</h4>
             {renderList()}
-
-            {renderLoadMoreList()}
+            {renderFetchLoadedList()}
             {renderLoadButton()}
         </div>
     )
@@ -121,4 +119,6 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, { getPosts, deletePost, fetchLoadedPosts })(Home)
+export default connect(mapStateToProps, { 
+                getPosts, deletePost, fetchLoadedPosts, nextPostsToLoad, deleteLoadedPost 
+            })(Home)
