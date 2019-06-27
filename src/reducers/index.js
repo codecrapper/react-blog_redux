@@ -1,40 +1,28 @@
 import { combineReducers } from 'redux'
 
 const INITIAL_STATE = {
-    postsToLoad: [4,5,6],
-    allPosts: [],
-    loadMorePosts: []
+    post_id_to_load: [1,2,3],
+    allPosts: []
 }
 
 const posts = (state = INITIAL_STATE, action) => {
     switch(action.type) {
-        case 'GET_POSTS':
+        case 'FETCH_POSTS':
             return {
                 ...state,
-                allPosts: [...action.payload]
+                allPosts: [...state.allPosts, ...action.payload]
+            }
+        case 'FETCH_NEXT_POSTS':
+            return {
+                ...state,
+                post_id_to_load: [...action.payload]
             }
         case 'DELETE_POST':
-            let newPosts = state.allPosts.filter(post => post.id !== action.payload)
-            return {
-                ...state,
-                allPosts: [...newPosts]
-            }
-        case 'FETCH_LOADED_POSTS':
-            return {
-                ...state,
-                loadMorePosts: [...state.loadMorePosts, ...action.payload]
-            }
-        case 'NEXT_POSTS_TO_LOAD':
-            return {
-                ...state,
-                postsToLoad: [...action.payload]
-            }
-        case 'DELETE_LOADED_POST':
-            let newLoadedPosts = state.loadMorePosts.filter(post => post.id !== action.payload)
-            return {
-                ...state,
-                loadMorePosts: [...newLoadedPosts]
-            }
+                let newPosts = state.allPosts.filter(post => post.id !== action.payload)
+                return {
+                    ...state,
+                    allPosts: [...newPosts]
+                }
         default: 
             return state
     }
